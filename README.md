@@ -22,7 +22,7 @@ Automatically back up a live production project (Laravel / Next.js / any web app
 - [Security Notes](#security-notes)
 - [Limitations](#limitations)
 - [Troubleshooting](#troubleshooting)
-- [Precticle](#demo)
+- [Practical](#demo)
 
 ---
 
@@ -358,179 +358,92 @@ Run it without `-exec rm -rf {} \;` first (just `-print`) to see what would be d
 | Cron job never runs | `crontab -l` to confirm it is saved; `systemctl status cron` to confirm the service is running. |
 
 ---
-## Precticle Demo
-1. step : 
-mushahedur-rahman-khan@pulock:~$ ssh-keygen -t ed25519 -C "office-backup"
-Generating public/private ed25519 key pair.
-Enter file in which to save the key (/home/mushahedur-rahman-khan/.ssh/id_ed25519): mrk
-Enter passphrase for "mrk" (empty for no passphrase): 
+## Practical Demo
+--
 
-mushahedur-rahman-khan@pulock:~$ ssh-keygen -t ed25519 -C "office-backup"
-Generating public/private ed25519 key pair.
-Enter file in which to save the key (/home/mushahedur-rahman-khan/.ssh/id_ed25519): 
-/home/mushahedur-rahman-khan/.ssh/id_ed25519 already exists.
-Overwrite (y/n)? y
-Enter passphrase for "/home/mushahedur-rahman-khan/.ssh/id_ed25519" (empty for no passphrase): 
-Enter same passphrase again: 
-Your identification has been saved in /home/mushahedur-rahman-khan/.ssh/id_ed25519
-Your public key has been saved in /home/mushahedur-rahman-khan/.ssh/id_ed25519.pub
-The key fingerprint is:
-SHA256:SjMRKsFSJ+ySuHHYN3wcjlik0pxQUJvcdMov04w9N2Y office-backup
-The key's randomart image is:
-+--[ED25519 256]--+
-|oB*.+ o          |
-|.=o%.+..         |
-|o*X+=+..         |
-|*.=.=*+.         |
-| = .+oX E        |
-|.    + O .       |
-|      .          |
-|                 |
-|                 |
-+----[SHA256]-----+
-mushahedur-rahman-khan@pulock:~$ 
+## 🛠️ Step-by-Step Implementation Ledger
 
-2. Step : 
-mushahedur-rahman-khan@pulock:~$ ssh-copy-id root@200.97.175.152
-/usr/bin/ssh-copy-id: INFO: Source of key(s) to be installed: ssh-add -L
-/usr/bin/ssh-copy-id: INFO: attempting to log in with the new key(s), to filter out any that are already installed
-/usr/bin/ssh-copy-id: INFO: 1 key(s) remain to be installed -- if you are prompted now it is to install the new keys
-root@200.97.175.152's password: 
+### Step 1: Cryptographic Key Generation
+Proactively instantiate an advanced `Ed25519` private/public key string flagged with an identifying comment string:
+```bash
+ssh-keygen -t ed25519 -C "office-backup"
+```
+*(When prompted for paths and passphrases, bypass by pressing `Enter` to allow seamless automation without human intervention).*
 
-Number of key(s) added: 1
+### Step 2: Establish Remote Access Authorization
+Ship the newly provisioned public certificate string over onto the authoritative remote user space on the VPS cluster:
+```bash
+ssh-copy-id root@200.97.175.152
+```
 
-Now try logging into the machine, with: "ssh 'root@200.97.175.152'"
-and check to make sure that only the key(s) you wanted were added.
+### Step 3: Verify Secure Passwordless Handshake
+Test the terminal link to confirm direct entry into the remote machine without any manual password requests:
+```bash
+ssh root@200.97.175.152
+```
 
-3. Step: check go to server without password.
-mushahedur-rahman-khan@pulock:~$ ssh root@200.97.175.152
-Welcome to Ubuntu 24.04.4 LTS (GNU/Linux 6.8.0-136-generic x86_64)
+### Step 4: Provision & Deploy the Automation Script
+1. Formulate a shell target script locally in your home workspace:
+   ```bash
+   nano ~/backup-project.sh
+   ```
+2. Populate the script layout with the operational pipeline context:
+   ```bash
+   #!/bin/bash
 
- * Documentation:  https://help.ubuntu.com
- * Management:     https://landscape.canonical.com
- * Support:        https://ubuntu.com/pro
+   # ===== VPS Information =====
+   VPS_USER="root"
+   VPS_IP="400.197.375.152"
+   PROJECT_PATH="/var/www/html"
+   LOCAL_BACKUP="$HOME/VPS-Backups"
+   TODAY=$(date +%F)
+   FILE_NAME="html-$TODAY.tar.gz"
 
+   echo "========== Backup Started =========="
+   mkdir -p "$LOCAL_BACKUP/$TODAY"
 
-Expanded Security Maintenance for Applications is not enabled.
+   # Create full compressed archive inside remote staging path
+   echo "Creating full compressed tarball on VPS..."
+   ssh $VPS_USER@$VPS_IP "tar -czf /tmp/$FILE_NAME -C /var/www html"
 
-9 updates can be applied immediately.
-To see these additional updates run: apt list --upgradable
+   # Download archive safely over SCP channel
+   scp $VPS_USER@$VPS_IP:/tmp/$FILE_NAME "$LOCAL_BACKUP/$TODAY/"
 
-12 additional security updates can be applied with ESM Apps.
-Learn more about enabling ESM Apps service at https://ubuntu.com/esm
+   # Purge staging storage from target node
+   ssh $VPS_USER@$VPS_IP "rm -f /tmp/$FILE_NAME"
 
+   echo "Backup Completed Successfully!"
+   echo "Saved : $LOCAL_BACKUP/$TODAY/$FILE_NAME"
+   ```
+3. Grant strict execution capabilities over to the kernel runtime layer:
+   ```bash
+   chmod +x ~/backup-project.sh
+   ```
 
-*** System restart required ***
-Last login: Mon Sep  7 09:34:04 2026 from 103.59.178.233
-root@srv1839994:~# exit
-logout
-Connection to 200.97.175.152 closed.
-
-4. Step:
-
-mkdir -p ~/VPS-Backups
-mushahedur-rahman-khan@pulock:~$ ls
- 'Build a google meet'   English       Movie      Pictures            Videos                      issues
- Desktop                 'ICT Layer'   Music      Public              docker-project              snap
- Documents               Learning      PC_Video   Resources-project   dumps                       software
- Downloads               Logic         Personal   VPS-Backups         github-recovery-codes.txt   test-project
-mushahedur-rahman-khan@pulock:~$ nano ~/backup-project.sh
-#!/bin/bash
-
-###########################################
- VPS Daily Source Code Backup Script
- Author : Mushahedur 
-###########################################
-
- ===== VPS Information =====
-VPS_USER="root"
-VPS_IP="300.97.375.252"
-
- VPS Project Location
-PROJECT_PATH="/var/www/html"
-
- Local Backup Folder
-LOCAL_BACKUP="$HOME/VPS-Backups"
-
- Today's Date
-TODAY=$(date +%F)
-
- Backup File Name
-FILE_NAME="html-$TODAY.tar.gz"
-
-echo "========== Backup Started =========="
-
- Create Today's Folder
-mkdir -p "$LOCAL_BACKUP/$TODAY"
-
- Create tar.gz in VPS (কোনো কিছু বাদ না দিয়ে সম্পূর্ণ ব্যাকআপ)
-echo "Creating full compressed tarball on VPS..."
-ssh $VPS_USER@$VPS_IP "
-tar -czf /tmp/$FILE_NAME -C /var/www html
-"
-
- Download Backup
-scp $VPS_USER@$VPS_IP:/tmp/$FILE_NAME "$LOCAL_BACKUP/$TODAY/"
-
- Remove Temporary Backup From VPS
-ssh $VPS_USER@$VPS_IP "rm -f /tmp/$FILE_NAME"
-
-echo "Backup Completed Successfully!"
-echo "Saved : $LOCAL_BACKUP/$TODAY/$FILE_NAME"
-
-4. Step:
-chmod +x ~/backup-project.sh
-mushahedur-rahman-khan@pulock:~$ ~/backup-project.sh
-========== Backup Started ==========
-Creating full compressed tarball on VPS...
-html-2026-09-18.tar.gz                                                                                                                                      100%  542     2.6KB/s   00:00    
-Backup Completed Successfully!
-Saved : /home/mushahedur-rahman-khan/VPS-Backups/2026-09-18/html-2026-09-18.tar.gz
-
-6. Step:
-mushahedur-rahman-khan@pulock:~$ crontab -e
-no crontab for mushahedur-rahman-khan - using an empty one
-Select an editor.  To change later, run select-editor again.
-  1. /bin/nano        <---- easiest
-  2. /usr/bin/vim.basic
-  3. /usr/bin/vim.tiny
-  4. /usr/bin/code
-  5. /usr/bin/antigravity
-  6. /bin/ed
-
-Choose 1-6 [1]: 
-crontab: installing new crontab
-
-7. Step: *add time*
-crontab -l
- Edit this file to introduce tasks to be run by cron.
-
- Each task to run has to be defined through a single line
- indicating with different fields when the task will be run
- and what command to run for the task
- 
- To define the time you can provide concrete values for
- minute (m), hour (h), day of month (dom), month (mon),
- and day of week (dow) or use '*' in these fields (for 'any').
- 
- Notice that tasks will be started based on the cron's system
- daemon's notion of time and timezones.
-
- Output of the crontab jobs (including errors) is sent through
- email to the user the crontab file belongs to (unless redirected).
- 
- For example, you can run a backup of all your user accounts
- at 5 a.m every week with:
- 0 5 * * 1 tar -zcf /var/backups/home.tgz /home/
- 
- For more information see the manual pages of crontab(5) and cron(8)
-
- m h  dom mon dow   command
+### Step 5: Clock and Bind Automation using the Cron Engine
+Open your default user space task matrix editor:
+```bash
+crontab -e
+```
+Inject the operational sequence line to trigger standard backups **every single evening at exactly 10:50 PM (22:50)**, routing standard outputs out directly into local logging tracks:
+```text
 50 22 * * * /home/mushahedur-rahman-khan/backup-project.sh >> /home/mushahedur-rahman-khan/backup.log 2>&1
+```
 
+---
 
-## 👨‍💻 Author
-- **Name:** Mushahedur Rahman Khan (MRK)
-- **Portfolio Website:** [mushahadur.github.io/Portfolio-Website](https://mushahadur.github.io/Portfolio-Website)
+## 📂 Active Storage Mapping Output
+Upon successful cron or manual firing, backup files map sequentially inside your storage tracks:
+```text
+/home/mushahedur-rahman-khan/VPS-Backups/
+└── 2026-09-18/
+    └── html-2026-09-18.tar.gz   <- Production Source Archive [Verified]
+```
 
-Feel free to fork this project, open issues, or submit pull requests to add new automation modules (e.g., MySQL auto-dump features).
+---
+
+## 👨‍💻 Engineering Profile
+- **Lead Automator:** Mushahedur Rahman Khan (MRK)
+- **Interactive Portfolio:** [mushahadur.github.io/Portfolio-Website](https://github.io)
+
+Feel free to fork this platform repository, raise technical issue logs, or submit optimizations to extend data retention models!
