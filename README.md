@@ -438,41 +438,41 @@ mushahedur-rahman-khan@pulock:~$ nano ~/backup-project.sh
 #!/bin/bash
 
 ###########################################
-# VPS Daily Source Code Backup Script
-# Author : Mushahedur 
+ VPS Daily Source Code Backup Script
+ Author : Mushahedur 
 ###########################################
 
-# ===== VPS Information =====
+ ===== VPS Information =====
 VPS_USER="root"
 VPS_IP="200.97.175.152"
 
-# VPS Project Location
+ VPS Project Location
 PROJECT_PATH="/var/www/html"
 
-# Local Backup Folder
+ Local Backup Folder
 LOCAL_BACKUP="$HOME/VPS-Backups"
 
-# Today's Date
+ Today's Date
 TODAY=$(date +%F)
 
-# Backup File Name
+ Backup File Name
 FILE_NAME="html-$TODAY.tar.gz"
 
 echo "========== Backup Started =========="
 
-# Create Today's Folder
+ Create Today's Folder
 mkdir -p "$LOCAL_BACKUP/$TODAY"
 
-# Create tar.gz in VPS (কোনো কিছু বাদ না দিয়ে সম্পূর্ণ ব্যাকআপ)
+ Create tar.gz in VPS (কোনো কিছু বাদ না দিয়ে সম্পূর্ণ ব্যাকআপ)
 echo "Creating full compressed tarball on VPS..."
 ssh $VPS_USER@$VPS_IP "
 tar -czf /tmp/$FILE_NAME -C /var/www html
 "
 
-# Download Backup
+ Download Backup
 scp $VPS_USER@$VPS_IP:/tmp/$FILE_NAME "$LOCAL_BACKUP/$TODAY/"
 
-# Remove Temporary Backup From VPS
+ Remove Temporary Backup From VPS
 ssh $VPS_USER@$VPS_IP "rm -f /tmp/$FILE_NAME"
 
 echo "Backup Completed Successfully!"
@@ -503,32 +503,34 @@ crontab: installing new crontab
 
 7. Step: *add time*
 crontab -l
-# Edit this file to introduce tasks to be run by cron.
-# 
-# Each task to run has to be defined through a single line
-# indicating with different fields when the task will be run
-# and what command to run for the task
-# 
-# To define the time you can provide concrete values for
-# minute (m), hour (h), day of month (dom), month (mon),
-# and day of week (dow) or use '*' in these fields (for 'any').
-# 
-# Notice that tasks will be started based on the cron's system
-# daemon's notion of time and timezones.
-# 
-# Output of the crontab jobs (including errors) is sent through
-# email to the user the crontab file belongs to (unless redirected).
-# 
-# For example, you can run a backup of all your user accounts
-# at 5 a.m every week with:
-# 0 5 * * 1 tar -zcf /var/backups/home.tgz /home/
-# 
-# For more information see the manual pages of crontab(5) and cron(8)
-# 
-# m h  dom mon dow   command
+ Edit this file to introduce tasks to be run by cron.
+
+ Each task to run has to be defined through a single line
+ indicating with different fields when the task will be run
+ and what command to run for the task
+ 
+ To define the time you can provide concrete values for
+ minute (m), hour (h), day of month (dom), month (mon),
+ and day of week (dow) or use '*' in these fields (for 'any').
+ 
+ Notice that tasks will be started based on the cron's system
+ daemon's notion of time and timezones.
+
+ Output of the crontab jobs (including errors) is sent through
+ email to the user the crontab file belongs to (unless redirected).
+ 
+ For example, you can run a backup of all your user accounts
+ at 5 a.m every week with:
+ 0 5 * * 1 tar -zcf /var/backups/home.tgz /home/
+ 
+ For more information see the manual pages of crontab(5) and cron(8)
+
+ m h  dom mon dow   command
 50 22 * * * /home/mushahedur-rahman-khan/backup-project.sh >> /home/mushahedur-rahman-khan/backup.log 2>&1
 
 
-## Author: Mushahedur 
+## 👨‍💻 Author
+- **Name:** Mushahedur Rahman Khan (MRK)
+- **Portfolio Website:** [mushahadur.github.io/Portfolio-Website](https://mushahadur.github.io/Portfolio-Website)
 
-Link:  [MRK](https://choosealicense.com/licenses/mit/](https://github.com/mushahadur?tab=repositories)
+Feel free to fork this project, open issues, or submit pull requests to add new automation modules (e.g., MySQL auto-dump features).
