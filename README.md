@@ -444,7 +444,7 @@ mushahedur-rahman-khan@pulock:~$ nano ~/backup-project.sh
 
  ===== VPS Information =====
 VPS_USER="root"
-VPS_IP="200.97.175.152"
+VPS_IP="300.97.375.252"
 
  VPS Project Location
 PROJECT_PATH="/var/www/html"
